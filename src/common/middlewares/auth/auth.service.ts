@@ -49,8 +49,8 @@ export class AuthService {
      * @returns
      * @memberof AuthService
      */
-    public isExcluded(originalUrl): boolean {
-        const exclude = ["/api-docs", "/common"];
+    public isExcluded(originalUrl): any {
+        const exclude = ["/api-docs", "/common","/users"];
         const pathname = url.parse(originalUrl).path;
         if (pathname === "/") {
             return true;
