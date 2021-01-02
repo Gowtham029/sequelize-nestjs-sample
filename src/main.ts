@@ -1,11 +1,11 @@
-import { NestFactory } from '@nestjs/core';
-import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
-import { AppModule } from './app.module';
-import { GlobalExceptionFilter } from './common/filters/exception.filters';
+import { NestFactory } from "@nestjs/core";
+import { DocumentBuilder, SwaggerModule } from "@nestjs/swagger";
+import { AppModule } from "./app.module";
+import { GlobalExceptionFilter } from "./common/filters/exception.filters";
 
 async function bootstrap() {
-  const app = await NestFactory.create(AppModule);
-  const PORT = process.env.PORT || 3000;
+    const app = await NestFactory.create(AppModule);
+    const PORT = process.env.PORT || 3000;
 
     app.useGlobalFilters(new GlobalExceptionFilter());
 

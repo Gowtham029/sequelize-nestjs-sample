@@ -15,37 +15,30 @@ import { LoggerService } from "./logger.service";
 export class LogInterceptor implements NestInterceptor {
     public constructor(private readonly logger: LoggerService) {}
 
-    public intercept(
-        context: ExecutionContext,
-        next: CallHandler,
-    ): Observable<Response> {
+    public intercept(context: ExecutionContext, next: CallHandler): Observable<Response> {
         const startTime = new Date().getMilliseconds();
         const request = context.switchToHttp().getRequest();
 
         return next.handle().pipe(
             map(data => {
                 const responseStatus =
-                    request.method === "POST"
-                        ? HttpStatus.CREATED
-                        : HttpStatus.OK;
+                    request.method === "POST" ? HttpStatus.CREATED : HttpStatus.OK;
                 this.logger.info(
-                    `${this.getTimeDelta(startTime)} ${
-                        request.ip
-                    } ${responseStatus} ${request.method} ${this.getUrl(
-                        request,
-                    )}`,
+                    `${this.getTimeDelta(startTime)} ${request.ip} ${responseStatus} ${
+                        request.method
+                    } ${this.getUrl(request)}`,
                 );
                 return data;
             }),
-            catchError(err => {
+            catchError(error => {
                 // Log fomat inspired by the Squid docs
                 // See https://docs.trafficserver.apache.org/en/6.1.x/admin-guide/monitoring/logging/log-formats.en.html
                 this.logger.error(
-                    `${this.getTimeDelta(startTime)} ${request.ip} ${
-                        err.status
-                    } ${request.method} ${this.getUrl(request)}`,
+                    `${this.getTimeDelta(startTime)} ${request.ip} ${error.status} ${
+                        request.method
+                    } ${this.getUrl(request)}`,
                 );
-                return throwError(err);
+                return throwError(error);
             }),
         );
     }
@@ -55,8 +48,6 @@ export class LogInterceptor implements NestInterceptor {
     }
 
     private getUrl(request: Request): string {
-        return `${request.protocol}://${request.get("host")}${
-            request.originalUrl
-        }`;
+        return `${request.protocol}://${request.get("host")}${request.originalUrl}`;
     }
 }

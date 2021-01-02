@@ -1,9 +1,4 @@
-import {
-    Catch,
-    ArgumentsHost,
-    HttpStatus,
-    HttpException,
-} from "@nestjs/common";
+import { Catch, ArgumentsHost, HttpStatus, HttpException } from "@nestjs/common";
 import { BaseExceptionFilter } from "@nestjs/core";
 
 @Catch()
@@ -12,9 +7,8 @@ export class GlobalExceptionFilter extends BaseExceptionFilter {
         super();
     }
     catch(exception: any, host: ArgumentsHost) {
-        const ctx = host.switchToHttp();
-        const response = ctx.getResponse();
-        const request = ctx.getRequest();
+        const context = host.switchToHttp();
+        const response = context.getResponse();
         let statusCode: number = HttpStatus.INTERNAL_SERVER_ERROR;
         Object.keys(HttpStatus).forEach(status => {
             if (
@@ -24,12 +18,8 @@ export class GlobalExceptionFilter extends BaseExceptionFilter {
                 statusCode = HttpStatus[status];
             }
         });
-        let message =
-            exception instanceof Error
-                ? exception.message
-                : exception.message.error;
-        message =
-            typeof message === "object" ? JSON.stringify(message) : message;
+        let message = exception instanceof Error ? exception.message : exception.message.error;
+        message = typeof message === "object" ? JSON.stringify(message) : message;
         response.status(statusCode).json({
             statusCode: statusCode,
             timestamp: new Date().toISOString(),

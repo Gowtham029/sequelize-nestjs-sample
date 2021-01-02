@@ -5,14 +5,8 @@ export class LoggerService {
 
     public constructor() {
         const format = this.isProductionEnv()
-            ? winston.format.combine(
-                  winston.format.timestamp(),
-                  winston.format.json(),
-              )
-            : winston.format.combine(
-                  winston.format.colorize(),
-                  winston.format.simple(),
-              );
+            ? winston.format.combine(winston.format.timestamp(), winston.format.json())
+            : winston.format.combine(winston.format.colorize(), winston.format.simple());
 
         this.instance = winston.createLogger({
             level: "info",
@@ -39,9 +33,6 @@ export class LoggerService {
     }
 
     private isProductionEnv(): boolean {
-        return (
-            process.env.NODE_ENV === "production" ||
-            process.env.NODE_ENV === "staging"
-        );
+        return process.env.NODE_ENV === "production" || process.env.NODE_ENV === "staging";
     }
 }

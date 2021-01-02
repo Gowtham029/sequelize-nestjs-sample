@@ -1,4 +1,4 @@
-import { Injectable, Inject, HttpException, HttpStatus } from "@nestjs/common";
+import { Injectable, HttpException, HttpStatus } from "@nestjs/common";
 import { find } from "lodash";
 
 import url = require("url");
@@ -28,12 +28,12 @@ export class AuthService {
             token = token.replace("Bearer ", "");
             const result = await this.jwtService.verify(token);
             return result;
-        } catch (error) {
+        } catch {
             throw new HttpException("Invalid Token", HttpStatus.UNAUTHORIZED);
         }
     }
 
-    async createAuthToken(payload: any): Promise<String> {
+    async createAuthToken(payload: any): Promise<string> {
         const token = this.jwtService.sign({
             _id: payload._id,
             role: payload.role,
@@ -50,7 +50,7 @@ export class AuthService {
      * @memberof AuthService
      */
     public isExcluded(originalUrl): any {
-        const exclude = ["/api-docs", "/common","/users"];
+        const exclude = ["/api-docs", "/common", "/users"];
         const pathname = url.parse(originalUrl).path;
         if (pathname === "/") {
             return true;

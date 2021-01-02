@@ -5,41 +5,46 @@ const copyWebpackPlugin = require("copy-webpack-plugin");
 
 module.exports = options => {
     return {
-        entry: [
-            'webpack/hot/poll?100',
-            './src/main.ts',
-        ],
+        entry: ["webpack/hot/poll?100", "./src/main.ts"],
         optimization: {
             minimize: false,
         },
-        target: 'node',
+        target: "node",
         externals: [
             nodeExternals({
-                whitelist: ['webpack/hot/poll?100'],
+                allowlist: ["webpack/hot/poll?100"],
             }),
         ],
         module: {
             rules: [
                 {
                     test: /\.tsx?$/,
-                    loader: 'ts-loader',
+                    loader: "ts-loader",
                     options: {
-                      transpileOnly: true
+                        transpileOnly: true,
                     },
                     exclude: /node_modules/,
-                  }
-    ]
+                },
+            ],
         },
         resolve: {
-            extensions: ['.tsx', '.ts', '.js'],
+            extensions: [".tsx", ".ts", ".js"],
         },
         plugins: [
             new webpack.HotModuleReplacementPlugin(),
-            new webpack.WatchIgnorePlugin([/\.js$/, /\.d\.ts$/])
+            new webpack.WatchIgnorePlugin([/\.js$/, /\.d\.ts$/]),
+            new copyWebpackPlugin({
+                patterns: [
+                    {
+                        from: "package.json",
+                        to: ".",
+                    },
+                ],
+            }),
         ],
         output: {
-            path: path.join(__dirname, 'build'),
-            filename: 'index.js',
+            path: path.join(__dirname, "build"),
+            filename: "index.js",
         },
-    }
-}
+    };
+};

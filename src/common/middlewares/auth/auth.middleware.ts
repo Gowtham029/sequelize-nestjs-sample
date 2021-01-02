@@ -1,9 +1,4 @@
-import {
-    NestMiddleware,
-    Injectable,
-    HttpException,
-    HttpStatus,
-} from "@nestjs/common";
+import { NestMiddleware, Injectable, HttpException, HttpStatus } from "@nestjs/common";
 import { Request, Response, NextFunction } from "express";
 import { AuthService } from "./auth.service";
 
@@ -32,14 +27,8 @@ export class AuthMiddleware implements NestMiddleware {
      * @returns {Promise<void>}
      * @memberof AuthMiddleware
      */
-    async use(
-        request: Request,
-        response: Response,
-        next: NextFunction,
-    ): Promise<void> {
-        const isExcluded = await this.authService.isExcluded(
-            request.originalUrl,
-        );
+    async use(request: Request, response: Response, next: NextFunction): Promise<void> {
+        const isExcluded = await this.authService.isExcluded(request.originalUrl);
         if (isExcluded) {
             next();
             return;
